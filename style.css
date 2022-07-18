@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .button {
+        @apply rounded-md border border-black py-2 px-5 tracking-wider duration-300 text-white
+    }
+    .green {
+        @apply bg-green-600 hover:bg-green-700
+    }
+    .orange {
+        @apply bg-orange-600 hover:bg-orange-700
+    }
+    .red {
+        @apply bg-red-600 hover:bg-red-700
+    }
+    .emerald {
+        @apply bg-emerald-600 hover:bg-emerald-700
+    }
+}

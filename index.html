@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mines</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body class="flex h-screen flex-col items-center justify-center space-y-16 bg-gray-700 select-none">
+        <p class="text-6xl tracking-wider text-white">Mines</p>
+        <div class="space-x-10">
+            <a href="/game?width=8&height=8&pm=15.625">
+                <button class="button green">Easy</button>
+            </a>
+            <a href="/game?width=16&height=16&pm=15.625">
+                <button class="button orange">Medium</button>
+            </a>
+            <a href="/game?width=30&height=16&pm=20.625">
+                <button class="button red">Hard</button>
+            </a>
+        </div>
+        <div class="flex flex-col items-center space-y-8">
+            <button id="custom-menu-button" class="rounded-md border border-transparent p-2 pl-3.5 duration-300 hover:border-white">
+                <div class="flex space-x-1 items-center">
+                    <p class="text-xl text-white">Custom</p>
+                    <img id="custom-menu-button-icon" class="rotate-180 duration-100" src="assets/chevron-up.svg"/>
+                </div>
+            </button>
+            <div id="custom-menu" class="opacity-0 space-y-6 duration-100">
+                <div class="flex justify-center space-x-10">
+                    <div class="space-x-2">
+                        <label for="width" class="text-white">Width</label>
+                        <input id="custom-menu-width" name="width" class="w-12 px-2 border-2 border-gray-400 focus:outline-none invalid:border-red-700 valid:border-green-700" pattern="[0-9]{1,2}" ref={widthInput} placeholder="10" disabled/>
+                    </div>
+                    <div class="space-x-2">
+                        <label for="height" class="text-white">Height</label>
+                        <input id="custom-menu-height" name="height" class="w-12 px-2 border-2 border-gray-400 focus:outline-none invalid:border-red-700 valid:border-green-700" pattern="[0-9]{1,2}" ref={heightInput} placeholder="10" disabled/>
+                    </div>
+                </div>
+                <div class="flex space-x-4">
+                    <label for="pm" class="text-white">Percentage Of Mines</label>
+                    <input id="custom-menu-slider" value="16" type="range" name="pm" class="w-40" disabled/>
+                    <p id="custom-menu-slider-text" class="text-white">16%</p>
+                </div>
+                <div class="flex justify-center">
+                    <button id="custom-menu-play" class="button emerald" disabled>Play</button>
+                </div>
+            </div>
+        </div>
+        <script src="./ui.js"></script>
+    </body>
+</html>
