@@ -24,5 +24,5 @@ customMenuPlay?.addEventListener("click", () => {
     const width: number = +customMenuWidth.value | 10
     const height: number = +customMenuHeight.value | 10
     const pm: number = +customMenuSlider.value
-    window.location.href = `/game?width=${width}&height=${height}&pm=${pm}`
+    window.location.href = `/Mines/game?width=${width}&height=${height}&pm=${pm}`
 })
