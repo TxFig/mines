@@ -22,5 +22,5 @@ customMenuPlay === null || customMenuPlay === void 0 ? void 0 : customMenuPlay.a
     const width = +customMenuWidth.value | 10;
     const height = +customMenuHeight.value | 10;
     const pm = +customMenuSlider.value;
-    window.location.href = `/game?width=${width}&height=${height}&pm=${pm}`;
+    window.location.href = `/Mines/game?width=${width}&height=${height}&pm=${pm}`;
 });
