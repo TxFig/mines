@@ -11,13 +11,13 @@
         <p class="text-6xl tracking-wider text-white">Mines</p>
         <div class="space-x-10">
             <a href="/Mines/game?width=8&height=8&pm=15.625">
-                <button class="button green">Easy</button>
+                <button class="button bg-green-600 hover:bg-green-700">Easy</button>
             </a>
             <a href="/Mines/game?width=16&height=16&pm=15.625">
-                <button class="button orange">Medium</button>
+                <button class="button bg-orange-600 hover:bg-orange-700">Medium</button>
             </a>
             <a href="/Mines/game?width=30&height=16&pm=20.625">
-                <button class="button red">Hard</button>
+                <button class="button bg-red-600 hover:bg-red-700">Hard</button>
             </a>
         </div>
         <div class="flex flex-col items-center space-y-8">
@@ -31,11 +31,11 @@
                 <div class="flex justify-center space-x-10">
                     <div class="space-x-2">
                         <label for="width" class="text-white">Width</label>
-                        <input id="custom-menu-width" name="width" class="w-12 px-2 border-2 border-gray-400 focus:outline-none invalid:border-red-700 valid:border-green-700" pattern="[0-9]{1,2}" ref={widthInput} placeholder="10" disabled/>
+                        <input id="custom-menu-width" name="width" class="w-12 px-2 border-2 border-gray-400 focus:outline-none invalid:border-red-700 valid:border-green-700" pattern="[0-9]{1,2}" placeholder="10" disabled/>
                     </div>
                     <div class="space-x-2">
                         <label for="height" class="text-white">Height</label>
-                        <input id="custom-menu-height" name="height" class="w-12 px-2 border-2 border-gray-400 focus:outline-none invalid:border-red-700 valid:border-green-700" pattern="[0-9]{1,2}" ref={heightInput} placeholder="10" disabled/>
+                        <input id="custom-menu-height" name="height" class="w-12 px-2 border-2 border-gray-400 focus:outline-none invalid:border-red-700 valid:border-green-700" pattern="[0-9]{1,2}" placeholder="10" disabled/>
                     </div>
                 </div>
                 <div class="flex space-x-4">
@@ -44,7 +44,7 @@
                     <p id="custom-menu-slider-text" class="text-white">16%</p>
                 </div>
                 <div class="flex justify-center">
-                    <button id="custom-menu-play" class="button emerald" disabled>Play</button>
+                    <button id="custom-menu-play" class="button bg-emerald-600 hover:bg-emerald-700" disabled>Play</button>
                 </div>
             </div>
         </div>

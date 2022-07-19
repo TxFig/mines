@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npx tailwindcss -i style.css -o dist/style.css && npx tsc && copy /y index.html dist && Xcopy game dist\\game /I/Y && Xcopy assets dist\\assets /I/Y"
+    "build": "npx tailwindcss -i style.css -o dist/style.css && npx tsc && copy /y index.html dist && copy /y game\\index.html dist\\game && Xcopy game\\assets dist\\game\\assets /I/Y && Xcopy assets dist\\assets /I/Y"
   },
   "keywords": [],
   "author": "",
