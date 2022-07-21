@@ -1,5 +1,5 @@
-import * as canvasUtils from "./canvasUtils";
-import { createMap, placeMines, neighboursMap, isInMap } from "./gameUtils";
+import * as canvasUtils from "./canvasUtils.js";
+import { createMap, placeMines, neighboursMap, isInMap } from "./gameUtils.js";
 const pauseButton = document.getElementById("pause-button");
 const restartButton = document.getElementById("restart-button");
 const menuButton = document.getElementById("menu-button");
