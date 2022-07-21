@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isInMap = exports.placeMines = exports.neighboursMap = exports.createMap = exports.Tile = void 0;
-class Tile {
+export class Tile {
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -12,8 +9,7 @@ class Tile {
         this.exploded = false;
     }
 }
-exports.Tile = Tile;
-function createMap(width, height) {
+export function createMap(width, height) {
     const arr = [];
     for (let y = 0; y < height; y++) {
         arr.push([]);
@@ -23,16 +19,15 @@ function createMap(width, height) {
     }
     return arr;
 }
-exports.createMap = createMap;
 function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
-exports.neighboursMap = [
+export const neighboursMap = [
     [-1, -1], [0, -1], [1, -1],
     [-1, 0], [0, 0], [1, 0],
     [-1, 1], [0, 1], [1, 1]
 ];
-function placeMines(map, width, height, numberOfMines, x, y) {
+export function placeMines(map, width, height, numberOfMines, x, y) {
     for (let n = 0; n < numberOfMines;) {
         // Select random tile
         const rx = Math.floor(random(0, width - 1));
@@ -43,7 +38,7 @@ function placeMines(map, width, height, numberOfMines, x, y) {
         if (!map[ry][rx].hasMine) {
             // Find out if random tile is adjecent to clicked tile
             let adjacentToClick = false;
-            for (const neighbour of exports.neighboursMap)
+            for (const neighbour of neighboursMap)
                 if (rx == x + neighbour[0] && ry == y + neighbour[1]) {
                     adjacentToClick = true;
                     break;
@@ -51,7 +46,7 @@ function placeMines(map, width, height, numberOfMines, x, y) {
             // If isn't adjacent to clicked tile place mine and update surronding tiles
             if (!adjacentToClick) {
                 map[ry][rx].hasMine = true;
-                for (const neighbour of exports.neighboursMap) {
+                for (const neighbour of neighboursMap) {
                     const nx = rx + neighbour[0];
                     const ny = ry + neighbour[1];
                     if (isInMap(nx, ny, width, height))
@@ -62,8 +57,6 @@ function placeMines(map, width, height, numberOfMines, x, y) {
         }
     }
 }
-exports.placeMines = placeMines;
-function isInMap(x, y, width, height) {
+export function isInMap(x, y, width, height) {
     return x >= 0 && y >= 0 && x < width && y < height;
 }
-exports.isInMap = isInMap;

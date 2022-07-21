@@ -1,30 +1,5 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const canvasUtils = __importStar(require("./canvasUtils"));
-const gameUtils_1 = require("./gameUtils");
+import * as canvasUtils from "./canvasUtils";
+import { createMap, placeMines, neighboursMap, isInMap } from "./gameUtils";
 const pauseButton = document.getElementById("pause-button");
 const restartButton = document.getElementById("restart-button");
 const menuButton = document.getElementById("menu-button");
@@ -85,7 +60,7 @@ function setup(_width, _height, _numberOfMines) {
     width = _width;
     height = _height;
     numberOfMines = _numberOfMines;
-    map = (0, gameUtils_1.createMap)(width, height);
+    map = createMap(width, height);
     calculateTileSize();
 }
 function calculateTileSize() {
@@ -211,10 +186,10 @@ function clearMinesRecursive(tile) {
     }
     tile.flag = "None";
     if (!tile.hasMine && tile.adjacentMines === 0) {
-        gameUtils_1.neighboursMap.forEach(neighbour => {
+        neighboursMap.forEach(neighbour => {
             const nx = tile.x + neighbour[0];
             const ny = tile.y + neighbour[1];
-            if ((0, gameUtils_1.isInMap)(nx, ny, width, height)) {
+            if (isInMap(nx, ny, width, height)) {
                 clearMinesRecursive(map[ny][nx]);
             }
         });
@@ -223,7 +198,7 @@ function clearMinesRecursive(tile) {
 function clearMine(x, y) {
     const tile = map[y][x];
     if (!placedMines) {
-        (0, gameUtils_1.placeMines)(map, width, height, numberOfMines, x, y);
+        placeMines(map, width, height, numberOfMines, x, y);
         placedMines = true;
         startTimer();
         pauseButton.toggleAttribute("disabled");
