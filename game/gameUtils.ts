@@ -45,8 +45,8 @@ export function placeMines(map: Tile[][], width: number, height: number, numberO
     for (let n = 0; n < numberOfMines;) {
 
         // Select random tile
-        const rx = Math.floor(random(0, width-1))
-        const ry = Math.floor(random(0, height-1))
+        const rx = Math.floor(random(0, width - 1))
+        const ry = Math.floor(random(0, height - 1))
 
         // If selected tile equals clicked tile continue (retry)
         if (rx == x && ry == y) continue
