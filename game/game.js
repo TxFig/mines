@@ -20,23 +20,13 @@ function init(query) {
     context.textAlign = "center";
     context.textBaseline = "middle";
 }
-/*
-const imagesSources = {
-    mine: await import("./assets/mine.svg"),
-    flag: await import("./assets/flag.svg"),
-    flagMaybe: await import("./assets/maybe.svg"),
-    flagIncorrect: await import("./assets/incorrect.svg"),
-    mineExploded: await import("./assets/exploded.svg")
-}
-
-const images = { // TODO: add number && and automate this
-    mine: canvasUtils.loadImage(imagesSources.mine.default),
-    flag: canvasUtils.loadImage(imagesSources.flag.default),
-    flagMaybe: canvasUtils.loadImage(imagesSources.flagMaybe.default),
-    flagIncorrect: canvasUtils.loadImage(imagesSources.flagIncorrect.default),
-    mineExploded: canvasUtils.loadImage(imagesSources.mineExploded.default),
-}
-*/
+const images = {
+    mine: canvasUtils.loadImage("./assets/mine.svg"),
+    flag: canvasUtils.loadImage("./assets/flag.svg"),
+    flagMaybe: canvasUtils.loadImage("./assets/maybe.svg"),
+    flagIncorrect: canvasUtils.loadImage("./assets/incorrect.svg"),
+    mineExploded: canvasUtils.loadImage("./assets/exploded.svg"),
+};
 const colors = {
     tileNormal: "#babdb6",
     tileNormalHover: "#d3d7cf",
@@ -112,10 +102,12 @@ function getColorToFill(tile, ix, iy) {
 }
 function loop() {
     canvasUtils.clear();
-    if (timerStopped && placedMines && !exploded) { //? & not completed
-        canvasUtils.fill(colors.tileVisible);
+    if (timerStopped && placedMines && !exploded && !completed()) {
+        canvasUtils.fill(colors.tileExplodedMine);
         canvasUtils.rect(0, 0, canvas.width, canvas.height);
-        canvasUtils.text("Pause", width / 2, height / 2);
+        canvasUtils.fill("#000");
+        canvasUtils.text("Pause", canvas.width / 2, canvas.height / 2);
+        window.requestAnimationFrame(loop);
         return;
     }
     for (let iy = 0; iy < height; iy++) {
@@ -136,26 +128,27 @@ function loop() {
             // Draw Image
             if (exploded && tile.hasMine && tile.flag == "None") {
                 if (tile.exploded) {
-                    //canvasUtils.image(images.mineExploded, centerX, centerY, imageSize, imageSize)
+                    canvasUtils.image(images.mineExploded, centerX, centerY, imageSize, imageSize);
                 }
                 else {
-                    //canvasUtils.image(images.mine, centerX, centerY, imageSize, imageSize)
+                    canvasUtils.image(images.mine, centerX, centerY, imageSize, imageSize);
                 }
             }
             // If this tile has a flag draw it
             if (tile.flag === "Flag") {
-                //canvasUtils.image(images.flag, centerX, centerY, imageSize, imageSize)
+                canvasUtils.image(images.flag, centerX, centerY, imageSize, imageSize);
             }
             else if (tile.flag === "Maybe") {
-                //canvasUtils.image(images.flagMaybe, centerX, centerY, imageSize, imageSize)
+                canvasUtils.image(images.flagMaybe, centerX, centerY, imageSize, imageSize);
             }
             // Draw the number if the tile is cleared and has adjacent mines
             if (tile.cleared && tile.adjacentMines != 0 && !tile.exploded) {
-                canvasUtils.fill("#000"); //! Hard coded text color
+                canvasUtils.fill("#000");
                 canvasUtils.text(tile.adjacentMines.toString(), centerX, centerY);
             }
         }
     }
+    updateUI();
     window.requestAnimationFrame(loop);
 }
 function mouseToTilePosition() {
@@ -181,10 +174,8 @@ function clearMinesRecursive(tile) {
         return;
     tile.cleared = true;
     nCleared++;
-    if (tile.flag === "Flag") {
+    if (tile.flag === "Flag")
         flagsPlaced--;
-        updateUI();
-    }
     tile.flag = "None";
     if (!tile.hasMine && tile.adjacentMines === 0) {
         neighboursMap.forEach(neighbour => {
@@ -196,10 +187,9 @@ function clearMinesRecursive(tile) {
         });
     }
 }
-function clearMine(x, y) {
-    const tile = map[y][x];
+function clearMine(tile) {
     if (!placedMines) {
-        placeMines(map, width, height, numberOfMines, x, y);
+        placeMines(map, width, height, numberOfMines, tile.x, tile.y);
         placedMines = true;
         startTimer();
         pauseButton.toggleAttribute("disabled");
@@ -212,17 +202,21 @@ function clearMine(x, y) {
         tile.exploded = true;
         exploded = true;
         stopTimer();
+        pauseButton.toggleAttribute("disabled");
         return;
     }
     if (completed() && !exploded) {
-        //p5.stopClock()
+        stopTimer();
         for (let x = 0; x < width; x++) {
             for (let y = 0; y < height; y++) {
-                if (map[y][x].hasMine) {
+                if (map[y][x].hasMine && map[y][x].flag != "Flag") {
                     map[y][x].flag = "Flag";
+                    flagsPlaced++;
                 }
             }
         }
+        pauseButton.toggleAttribute("disabled");
+        // TODO: If in top 10 add to score board
     }
 }
 function switchFlag(tile) {
@@ -230,7 +224,6 @@ function switchFlag(tile) {
         case "None":
             tile.flag = "Flag";
             flagsPlaced++;
-            updateUI();
             break;
         case "Flag":
             tile.flag = "Maybe";
@@ -238,9 +231,28 @@ function switchFlag(tile) {
         case "Maybe":
             tile.flag = "None";
             flagsPlaced--;
-            updateUI();
             break;
     }
+}
+function tryClear(tile) {
+    let Nflags = 0;
+    neighboursMap.forEach((neighbour) => {
+        const nx = tile.x + neighbour[0];
+        const ny = tile.y + neighbour[1];
+        if (isInMap(nx, ny, width, height) && map[ny][nx].flag == "Flag")
+            Nflags++;
+    });
+    if (!(tile.adjacentMines == Nflags))
+        return;
+    neighboursMap.forEach((neighbour) => {
+        const nx = tile.x + neighbour[0];
+        const ny = tile.y + neighbour[1];
+        if (isInMap(nx, ny, width, height) && map[ny][nx].flag != "Flag") {
+            clearMine(map[ny][nx]);
+            if (completed())
+                return;
+        }
+    });
 }
 function mouseClick(event) {
     const position = mouseToTilePosition();
@@ -250,10 +262,10 @@ function mouseClick(event) {
     // On mouse left click
     if (event.button == 0) {
         if (tile.cleared) {
-            // TODO: https://github.com/GNOME/gnome-mines/blob/master/src/minefield.vala#L169
+            tryClear(tile);
         }
         else {
-            clearMine(position.x, position.y);
+            clearMine(tile);
         }
     }
     // On mouse right click
@@ -263,25 +275,42 @@ function mouseClick(event) {
         switchFlag(tile);
     }
 }
+function restartGame() {
+    map = createMap(width, height);
+    nCleared = 0;
+    placedMines = false;
+    exploded = false;
+    flagsPlaced = 0;
+    stopTimer();
+    timer = 0;
+    pauseButton.toggleAttribute("disabled");
+    restartButton.toggleAttribute("disabled");
+}
 function startTimer() {
-    timerId = setInterval(() => timer++, 1000);
+    if (timerId != -1)
+        return; // Prevent from having multiple timers
     timerStopped = false;
+    timerId = setInterval(() => timer++, 1000);
 }
 function stopTimer() {
-    clearInterval(timerId);
     timerStopped = true;
+    clearInterval(timerId);
+    timerId = -1;
 }
 function getTime(timer) {
     const minutes = Math.floor(timer / 60);
     const seconds = timer - minutes * 60;
     return { minutes, seconds };
 }
+function addZeros(number, length) {
+    return String(number).padStart(length, "0");
+}
 const flagsText = document.getElementById("flagsText");
 const timerText = document.getElementById("timerText");
 function updateUI() {
     flagsText.innerText = `${flagsPlaced} / ${numberOfMines}`;
     const time = getTime(timer);
-    timerText.innerText = `${time.minutes} : ${time.seconds}`;
+    timerText.innerText = `${addZeros(time.minutes, 2)} : ${addZeros(time.seconds, 2)}`;
 }
 pauseButton.onclick = () => {
     if (timerStopped) {
@@ -293,20 +322,28 @@ pauseButton.onclick = () => {
         pauseButton.innerText = "Resume";
     }
 };
+function keepGamePrompt(newGameCallback) {
+    stopTimer();
+    showPrompt("Do you want to start a new game?", "If you start a new game, your current progress will be lost.", ["Keep Current Game", "Start New Game"], (index) => {
+        switch (index) {
+            case 0:
+                startTimer();
+                break;
+            case 1: newGameCallback();
+        }
+    });
+}
 restartButton.onclick = () => {
-    if (placedMines) {
-        // TODO: Ask if wants to discard this game
-    }
-    else {
-    }
+    if (placedMines && !exploded && !completed())
+        keepGamePrompt(restartGame);
+    else
+        restartGame();
 };
 menuButton.onclick = () => {
-    if (placedMines) {
-        // TODO: Ask if wants to discard this game
-    }
-    else {
-        window.location.href = `/Mines/`;
-    }
+    if (placedMines && !exploded && !completed())
+        keepGamePrompt(goToHomePage);
+    else
+        goToHomePage();
 };
 const prompt = document.getElementById("prompt");
 const promptTitle = document.getElementById("prompt-title");
@@ -315,17 +352,24 @@ const promptOptions = document.getElementById("prompt-options");
 function showPrompt(title, text, options, callback) {
     promptTitle.innerText = title;
     promptText.innerText = text;
+    promptOptions.replaceChildren();
     for (const option of options) {
         const button = document.createElement("button");
         button.innerText = option;
         button.classList.add("prompt-option");
         button.onclick = () => {
+            Array(...promptOptions.children).map((el) => {
+                el.classList.toggle("invisible");
+            });
             prompt.classList.toggle("invisible");
             callback(options.indexOf(option));
         };
         promptOptions.appendChild(button);
     }
     prompt.classList.toggle("invisible");
+}
+function goToHomePage() {
+    window.location.href = `/Mines/`;
 }
 window.onload = () => {
     init("#canvasContainer");
@@ -340,8 +384,6 @@ window.onload = () => {
         loop();
     }
     else {
-        showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], () => {
-            window.location.href = `/Mines/`;
-        });
+        showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], goToHomePage);
     }
 };
