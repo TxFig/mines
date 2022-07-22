@@ -112,10 +112,11 @@ function getColorToFill(tile, ix, iy) {
 }
 function loop() {
     canvasUtils.clear();
-    if (timerStopped && placedMines) {
+    if (timerStopped && placedMines && !exploded) { //? & not completed
         canvasUtils.fill(colors.tileVisible);
         canvasUtils.rect(0, 0, canvas.width, canvas.height);
         canvasUtils.text("Pause", width / 2, height / 2);
+        return;
     }
     for (let iy = 0; iy < height; iy++) {
         for (let ix = 0; ix < width; ix++) {
@@ -307,6 +308,26 @@ menuButton.onclick = () => {
         window.location.href = `/Mines/`;
     }
 };
+const prompt = document.getElementById("prompt");
+const promptTitle = document.getElementById("prompt-title");
+const promptText = document.getElementById("prompt-text");
+const promptOptions = document.getElementById("prompt-options");
+function showPrompt(title, text, options, callback) {
+    promptTitle.innerText = title;
+    promptText.innerText = text;
+    for (const option of options) {
+        const button = document.createElement("button");
+        button.classList.add("prompt-button");
+        button.onclick = () => {
+            prompt.classList.toggle("hidden");
+            prompt.classList.toggle("flex");
+            callback(options.indexOf(option));
+        };
+        promptOptions.appendChild(button);
+    }
+    prompt.classList.toggle("hidden");
+    prompt.classList.toggle("flex");
+}
 window.onload = () => {
     init("#canvasContainer");
     const queryString = window.location.search;
@@ -318,5 +339,10 @@ window.onload = () => {
         const numberOfMines = Math.round(+width * +height * +percentageOfMines / 100);
         setup(+width, +height, numberOfMines);
         loop();
+    }
+    else {
+        showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], (index) => {
+            console.log("Going Back");
+        });
     }
 };
