@@ -318,7 +318,7 @@ function showPrompt(title, text, options, callback) {
     for (const option of options) {
         const button = document.createElement("button");
         button.innerText = option;
-        button.classList.add("prompt-button");
+        button.classList.add("prompt-option");
         button.onclick = () => {
             prompt.classList.toggle("invisible");
             callback(options.indexOf(option));
@@ -341,7 +341,7 @@ window.onload = () => {
     }
     else {
         showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], () => {
-            console.log("Going Back");
+            window.location.href = `/Mines/`;
         });
     }
 };
