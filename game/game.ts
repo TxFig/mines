@@ -143,10 +143,11 @@ function getColorToFill(tile: Tile, ix: number, iy: number): string {
 function loop(): void {
     canvasUtils.clear()
 
-    if (timerStopped && placedMines) {
+    if (timerStopped && placedMines && !exploded) { //? & not completed
         canvasUtils.fill(colors.tileVisible)
         canvasUtils.rect(0, 0, canvas.width, canvas.height)
         canvasUtils.text("Pause", width / 2, height / 2)
+        return
     }
 
     for (let iy = 0; iy < height; iy++) {
@@ -356,6 +357,28 @@ menuButton.onclick = () => {
     }
 }
 
+const prompt = document.getElementById("prompt") as HTMLDivElement
+const promptTitle = document.getElementById("prompt-title") as HTMLHeadingElement
+const promptText = document.getElementById("prompt-text") as HTMLParagraphElement
+const promptOptions = document.getElementById("prompt-options") as HTMLDivElement
+
+function showPrompt(title: string, text: string, options: string[], callback: (index: number) => void): void {
+    promptTitle.innerText = title
+    promptText.innerText = text
+    for (const option of options) {
+        const button = document.createElement("button")
+        button.classList.add("prompt-button")
+        button.onclick = () => {
+            prompt.classList.toggle("hidden")
+            prompt.classList.toggle("flex")
+            callback(options.indexOf(option))
+        }
+        promptOptions.appendChild(button)
+    }
+    prompt.classList.toggle("hidden")
+    prompt.classList.toggle("flex")
+}
+
 window.onload = () => {
     init("#canvasContainer")
 
@@ -368,5 +391,9 @@ window.onload = () => {
         const numberOfMines = Math.round(+width * +height * +percentageOfMines / 100)
         setup(+width, +height, numberOfMines)
         loop()
+    } else {
+        showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], (index: number) => {
+            console.log("Going Back");
+        })
     }
 }
