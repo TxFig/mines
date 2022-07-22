@@ -42,7 +42,7 @@ const colors = {
     7: "#ff7d60",
     8: "#ff323c"
 };
-var width, height, numberOfMines, map, tileSize, imageSize, nCleared = 0, placedMines = false, exploded = false, flagsPlaced = 0, timer = 0, timerId, timerStopped = false;
+var width, height, numberOfMines, map, tileSize, imageSize, nCleared = 0, placedMines = false, exploded = false, flagsPlaced = 0, timer = 0, timerId = -1, timerStopped = false;
 function completed() {
     return width * height - numberOfMines == nCleared;
 }
