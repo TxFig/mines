@@ -368,7 +368,7 @@ function showPrompt(title: string, text: string, options: string[], callback: (i
     for (const option of options) {
         const button = document.createElement("button")
         button.innerText = option
-        button.classList.add("prompt-button")
+        button.classList.add("prompt-option")
         button.onclick = () => {
             prompt.classList.toggle("invisible")
             callback(options.indexOf(option))
@@ -392,7 +392,7 @@ window.onload = () => {
         loop()
     } else {
         showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], () => {
-            console.log("Going Back");
+            window.location.href = `/Mines/`
         })
     }
 }
