@@ -1,5 +1,5 @@
-import * as canvasUtils from "./canvasUtils"
-import { createMap, placeMines, Tile, neighboursMap, isInMap } from "./gameUtils"
+import * as canvasUtils from "./canvasUtils.js"
+import { createMap, placeMines, Tile, neighboursMap, isInMap } from "./gameUtils.js"
 
 
 const pauseButton = document.getElementById("pause-button") as HTMLButtonElement
