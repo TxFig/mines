@@ -64,7 +64,7 @@ var width: number, height: number, numberOfMines: number,
     exploded = false,
     flagsPlaced = 0,
     timer = 0,
-    timerId: number,
+    timerId = -1,
     timerStopped = false
 
 function completed(): boolean {
