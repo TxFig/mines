@@ -604,6 +604,10 @@ video {
   color: rgb(31 41 55 / var(--tw-text-opacity));
 }
 
+.invisible {
+  visibility: hidden;
+}
+
 .absolute {
   position: absolute;
 }
@@ -622,10 +626,6 @@ video {
 
 .flex {
   display: flex;
-}
-
-.hidden {
-  display: none;
 }
 
 .h-screen {
