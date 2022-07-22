@@ -367,16 +367,15 @@ function showPrompt(title: string, text: string, options: string[], callback: (i
     promptText.innerText = text
     for (const option of options) {
         const button = document.createElement("button")
+        button.innerText = option
         button.classList.add("prompt-button")
         button.onclick = () => {
-            prompt.classList.toggle("hidden")
-            prompt.classList.toggle("flex")
+            prompt.classList.toggle("invisible")
             callback(options.indexOf(option))
         }
         promptOptions.appendChild(button)
     }
-    prompt.classList.toggle("hidden")
-    prompt.classList.toggle("flex")
+    prompt.classList.toggle("invisible")
 }
 
 window.onload = () => {
@@ -392,7 +391,7 @@ window.onload = () => {
         setup(+width, +height, numberOfMines)
         loop()
     } else {
-        showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], (index: number) => {
+        showPrompt("Invalid Arguments", "Invalid Arguments were used in the page URL", ["Back"], () => {
             console.log("Going Back");
         })
     }
