@@ -1,5 +1,6 @@
 import * as canvasUtils from "./canvasUtils.js";
 import { createMap, placeMines, neighboursMap, isInMap } from "./gameUtils.js";
+import scoreBoard from "../assets/scoreboard.json" assert { type: "json" };
 const pauseButton = document.getElementById("pause-button");
 const restartButton = document.getElementById("restart-button");
 const menuButton = document.getElementById("menu-button");
@@ -216,8 +217,68 @@ function clearMine(tile) {
             }
         }
         pauseButton.toggleAttribute("disabled");
-        // TODO: If in top 10 add to score board
+        let longest = 0;
+        for (const score of scoreBoard) {
+            longest = Math.max(longest, score.time);
+        }
+        if (timer <= longest && scoreBoard.length <= 10) {
+            addToScoreBoard();
+        }
     }
+}
+const scoreBoardDiv = document.getElementById("scoreBoard");
+const scoreBoardCloseButton = document.getElementById("scoreBoardClose");
+scoreBoardCloseButton.onclick = () => {
+    scoreBoardDiv.classList.toggle("invisible");
+    for (const score of scoreBoard) {
+        if (score.name == "") {
+            scoreBoard.splice(scoreBoard.indexOf(score), 1);
+        }
+    }
+};
+const scoresDiv = document.getElementById("scores");
+function addToScoreBoard() {
+    scoreBoard.push({ name: "", time: timer });
+    scoreBoard.sort((a, b) => {
+        return a.time - b.time;
+    });
+    if (scoreBoard.length == 11) {
+        scoreBoard.pop();
+    }
+    scoresDiv.replaceChildren(); // clear table
+    for (const score of scoreBoard) {
+        const row = document.createElement("tr");
+        const rank = document.createElement("td");
+        rank.innerText = (scoreBoard.indexOf(score) + 1).toString();
+        row.appendChild(rank);
+        const time = document.createElement("td");
+        time.innerText = score.time.toString();
+        row.appendChild(time);
+        if (score.name == "") {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.classList.add("scoreInput");
+            input.autofocus = true;
+            input.onkeydown = (ev) => {
+                if (ev.key == "Enter" && input.value != "") {
+                    ev.preventDefault();
+                    score.name = input.value;
+                    row.removeChild(input);
+                    const name = document.createElement("td");
+                    name.innerText = input.value;
+                    row.appendChild(name);
+                }
+            };
+            row.appendChild(input);
+        }
+        else {
+            const name = document.createElement("td");
+            name.innerText = score.name;
+            row.appendChild(name);
+        }
+        scoresDiv.appendChild(row);
+    }
+    scoreBoardDiv.classList.toggle("invisible");
 }
 function switchFlag(tile) {
     switch (tile.flag) {
@@ -283,8 +344,8 @@ function restartGame() {
     flagsPlaced = 0;
     stopTimer();
     timer = 0;
-    pauseButton.toggleAttribute("disabled");
-    restartButton.toggleAttribute("disabled");
+    pauseButton.disabled = true;
+    restartButton.disabled = true;
 }
 function startTimer() {
     if (timerId != -1)
