@@ -8,15 +8,21 @@
     font-family: "Ubuntu", sans-serif
 }
 
-@layer components {
-    .button {
-        @apply rounded-md border border-black py-2 px-5 tracking-wider duration-300 text-white
-    }
-    .game-button {
-        @apply border text-white border-black rounded py-2.5 hover:bg-gray-400 hover:text-black duration-300 disabled:bg-gray-600 disabled:text-gray-800 disabled:hover:text-gray-800
-    }
+.button {
+    @apply rounded-md border border-black py-2 px-5 tracking-wider duration-300 text-white
+}
+.game-button {
+    @apply border text-white border-black rounded py-2.5 hover:bg-gray-400 hover:text-black duration-300 disabled:bg-gray-600 disabled:text-gray-800 disabled:hover:text-gray-800
 }
 
 .prompt-option {
     @apply rounded bg-zinc-800 px-3 py-1.5 text-gray-200 duration-300 hover:bg-zinc-900
+}
+
+td {
+  @apply px-8 py-2 text-center;
+}
+
+.scoreInput {
+  @apply w-16 rounded bg-zinc-900 px-2;
 }
